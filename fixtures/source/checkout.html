@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="utf-8" />
+<!-- A made-up support console, rendered to PNG by scripts/make-fixtures.mjs. All values are fictional or reserved test data. -->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1280px; height: 640px; overflow: hidden; font: 15px/1.45 "Segoe UI", system-ui, sans-serif; background: #f3f4f7; color: #1d2433; }
+  .chrome { height: 74px; background: #dee1e6; }
+  .tabs { display: flex; gap: 8px; padding: 8px 14px 0; align-items: end; height: 34px; }
+  .tab { background: #fff; border-radius: 8px 8px 0 0; padding: 4px 18px; font-size: 12px; }
+  .urlbar { height: 40px; background: #fff; display: flex; align-items: center; gap: 14px; padding: 0 16px; color: #5f6368; }
+  .url { flex: 1; background: #f1f3f4; border-radius: 14px; padding: 3px 14px; font-size: 13px; }
+  .top { height: 52px; background: #141b2d; color: #fff; display: flex; align-items: center; gap: 28px; padding: 0 24px; font-size: 14px; }
+  .top b { font-size: 16px; } .top span { color: #aab3c8; } .top .on { color: #fff; border-bottom: 2px solid #6c8cff; line-height: 50px; }
+  main { display: grid; grid-template-columns: 1fr 380px; gap: 18px; padding: 18px 24px; }
+  .card { background: #fff; border: 1px solid #e3e6ee; border-radius: 8px; padding: 18px 20px; }
+  .alert { grid-column: 1 / -1; background: #fdecec; border-color: #f3b4b4; display: flex; gap: 14px; align-items: start; padding: 14px 20px; }
+  .dot { width: 26px; height: 26px; border-radius: 13px; background: #d93025; color: #fff; text-align: center; line-height: 26px; font-weight: 700; flex: none; }
+  .alert h1 { font-size: 19px; color: #a50e0e; } .alert p { color: #5c1b1b; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #6b7385; margin-bottom: 10px; }
+  dl { display: grid; grid-template-columns: 170px 1fr; row-gap: 11px; } dt { color: #6b7385; }
+  .log { margin-top: 18px; background: #101522; color: #d7def0; border-radius: 6px; padding: 14px 16px; font: 14px/1.9 Consolas, monospace; }
+  .log .err { color: #ff8f8f; }
+  button { margin-top: 16px; background: #2f55d4; color: #fff; border: 0; border-radius: 6px; padding: 9px 18px; font: inherit; font-weight: 600; }
+</style>
+<div class="chrome">
+  <div class="tabs"><div class="tab">Northwind Pay · Support console</div></div>
+  <div class="urlbar">← → ⟳ <div class="url">console.northwindpay.example/orders/ORD-88213</div></div>
+</div>
+<div class="top"><b>Northwind Pay</b><span class="on">Orders</span><span>Payments</span><span>Customers</span><span>Settings</span></div>
+<main>
+  <div class="card alert">
+    <div class="dot">!</div>
+    <div>
+      <h1>Payment failed: ERR_GATEWAY_TIMEOUT (502)</h1>
+      <p>The bank gateway did not respond within 30 seconds. The customer was not charged. Auto-retry is off.</p>
+    </div>
+  </div>
+  <section class="card">
+    <h2>Order ORD-88213</h2>
+    <dl>
+      <dt>Amount</dt><dd>INR 4,999.00</dd>
+      <dt>Plan</dt><dd>Team annual (5 seats)</dd>
+      <dt>Attempted</dt><dd>25 Nov 2026, 11:48:07 IST</dd>
+      <dt>Request ID</dt><dd>req_8f3a9c2e71b4</dd>
+    </dl>
+    <div class="log">
+      11:47:37 POST /v2/payments/charge<br />
+      11:47:37 gateway=bank-primary attempt=1<br />
+      <span class="err">11:48:07 ERR_GATEWAY_TIMEOUT upstream did not respond</span><br />
+      11:48:07 order marked payment_failed
+    </div>
+  </section>
+  <aside class="card">
+    <h2>Customer</h2>
+    <dl style="grid-template-columns: 90px 1fr">
+      <dt>Name</dt><dd>Priya Nair</dd>
+      <dt>Email</dt><dd>priya.nair@example.com</dd>
+      <dt>Phone</dt><dd>+91 98765 43210</dd>
+      <dt>Card</dt><dd>4111 1111 1111 1111</dd>
+      <dt>Expiry</dt><dd>08/29</dd>
+    </dl>
+    <button>Retry payment</button>
+  </aside>
+</main>

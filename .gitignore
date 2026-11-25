@@ -1,0 +1,24 @@
+node_modules/
+.tools/
+.cache/
+.tmp/
+static/panel/dist/
+static/panel/node_modules/
+static/panel/public/ort/
+test-results/
+e2e/.auth/
+e2e/out/
+__pycache__/
+*.log
+.env
+.env.*
+.forge-credentials.ps1
+# helpers for one particular machine
+scripts/env-d-drive.ps1
+scripts/load-forge-creds.ps1
+credentials.json
+# private working notes: account emails, site and install ids
+AGENT_HANDOFF.md
+STATUS.md
+codegeist-*.md
+.cursor/
