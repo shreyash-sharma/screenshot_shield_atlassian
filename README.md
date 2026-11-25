@@ -1,5 +1,3 @@
-![Screenshot Shield: share the screenshot, keep the secret](docs/images/banner.jpg)
-
 # Screenshot Shield for Jira
 
 **Everyone sees the error. Only the person you choose can reveal the private detail.**
@@ -16,14 +14,12 @@ Codegeist 2026 (Apps for Business Teams).
 
 [![Watch the demo on YouTube](docs/images/video.png)](https://www.youtube.com/watch?v=nXrCs4PB3E0)
 
-The pictures below are frames from this film and screenshots of the app. All customer data is made up.
+All customer data shown here is made up.
 
 ## The problem
 
 A payment fails and someone drops a screenshot on the ticket. The error is in it. So are the customer's email,
 phone number and card number, now visible to everyone who can open the work item and in every download.
-
-![A support screenshot full of private details, watched by everyone](docs/images/problem.jpg)
 
 ## What it protects
 
@@ -66,29 +62,21 @@ flowchart LR
 6. **Reveal.** The named person sees the value in place, on their screen only.
 7. **Revoke.** The publisher destroys the stored value whenever they like.
 
-![The browser tapes the screenshot first; the error stays readable](docs/images/taped.jpg)
+## In real Jira
 
-## Walkthrough in real Jira
-
-### 1. Review the suggested masks
+**Review the suggested masks, then pick one value and one person.**
 
 ![Suggested masks with the value that may be revealed](docs/images/review.png)
 
-### 2. Pick one person and a time limit
-
-![Choosing who can reveal the request ID, for three days](docs/images/attach.jpg)
-
-### 3. Check what Jira will store
-
-![The masked image Jira will receive](docs/images/stored.png)
-
-### 4. Everyone else sees the masked picture
+**Everyone else sees the masked picture.**
 
 ![Private details masked for everyone](docs/images/everyone.jpg)
 
-### 5. The named person reveals it in place
+**The named person reveals the value in place.**
 
 ![The request ID appears where it was](docs/images/right.jpg)
+
+## From publish to revoke
 
 ```mermaid
 sequenceDiagram
@@ -109,18 +97,6 @@ sequenceDiagram
     N->>F: Reveal
     F-->>N: Denied, no pixels
 ```
-
-### 6. Forge checks who is asking, every time
-
-![Forge checks the named person before releasing the value](docs/images/flow.jpg)
-
-### 7. Revoke, and the value is destroyed
-
-![Revoking destroys the stored value](docs/images/closed.jpg)
-
-## Three things between your data and the ticket
-
-![Masked before upload, one named person, locked on Forge](docs/images/three.jpg)
 
 ## Where each thing lives
 
