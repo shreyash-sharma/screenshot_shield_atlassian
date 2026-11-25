@@ -1,17 +1,43 @@
+![Screenshot Shield: share the screenshot, keep the secret](docs/images/banner.jpg)
+
 # Screenshot Shield for Jira
 
 **Everyone sees the error. Only the person you choose can reveal the private detail.**
 
 A Forge Custom UI panel for Jira work items. It finds private details in a screenshot **in the browser**, attaches
-only a masked copy to Jira, and can let one named person reveal one masked value for a limited time.
+only a masked copy to Jira, and can let one named person reveal one masked value for a limited time. Built for
+Codegeist 2026 (Apps for Business Teams).
 
-Built for Codegeist 2026 (Apps for Business Teams). [Demo video](https://youtu.be/nXrCs4PB3E0) ·
 [Architecture](docs/ARCHITECTURE.md) · [Security model](docs/SECURITY.md) · [Judge setup](JUDGE_SETUP.md)
+
+## Watch it (2:35)
+
+**https://www.youtube.com/watch?v=nXrCs4PB3E0**
+
+[![Watch the demo on YouTube](docs/images/video.png)](https://www.youtube.com/watch?v=nXrCs4PB3E0)
+
+The pictures below are frames from this film and screenshots of the app. All customer data is made up.
 
 ## The problem
 
 A payment fails and someone drops a screenshot on the ticket. The error is in it. So are the customer's email,
 phone number and card number, now visible to everyone who can open the work item and in every download.
+
+![A support screenshot full of private details, watched by everyone](docs/images/problem.jpg)
+
+## What it protects
+
+![Email addresses, phone numbers, card numbers, secret keys, request IDs and anything you box](docs/images/protects.jpg)
+
+## What is in this repository
+
+| Piece | What it is |
+| --- | --- |
+| **Panel** (`static/panel`) | React Custom UI: load a screenshot, OCR it in the browser, review masks, attach, reveal, revoke |
+| **Backend** (`src`) | Forge function with five resolver calls; access decisions, AES-256-GCM, Forge storage |
+| **Detector** (`static/panel/src/masks/detect.js`) | Deliberately narrow rules, so the error stays readable |
+| **Tests** (`tests`, `e2e`) | 19 Node tests, plus a two-account check on a real Jira site |
+| **Docs** (`docs`) | [Architecture](docs/ARCHITECTURE.md) and [security model](docs/SECURITY.md) |
 
 ## How it works
 
@@ -32,36 +58,90 @@ flowchart LR
     F -->|only after server checks| N[The one named person]
 ```
 
-The original image is not uploaded. The only unmasked pixels that reach the server are the single crop the
-publisher chose to make revealable.
+1. **Load.** Upload, drop or paste a screenshot into the panel.
+2. **Read.** OCR runs in the browser and rules suggest what to mask.
+3. **Review.** Move, resize, remove or draw masks; compare with exactly what Jira will store.
+4. **Choose.** Optionally pick one value, one person and how long (1, 3, 7 or 30 days).
+5. **Attach.** Jira receives the masked image. The chosen crop is encrypted by the Forge function.
+6. **Reveal.** The named person sees the value in place, on their screen only.
+7. **Revoke.** The publisher destroys the stored value whenever they like.
 
-## What it looks like
+![The browser tapes the screenshot first; the error stays readable](docs/images/taped.jpg)
 
-All customer data shown is made up.
+## Walkthrough in real Jira
 
-**Review the suggested masks**
+### 1. Review the suggested masks
 
-![Mask review](docs/images/review.png)
+![Suggested masks with the value that may be revealed](docs/images/review.png)
 
-**Check what Jira will store**
+### 2. Pick one person and a time limit
 
-![Masked image](docs/images/stored.png)
+![Choosing who can reveal the request ID, for three days](docs/images/attach.jpg)
 
-**The named person reveals the value in place**
+### 3. Check what Jira will store
 
-![Reveal in place](docs/images/reveal.png)
+![The masked image Jira will receive](docs/images/stored.png)
 
-## Features
+### 4. Everyone else sees the masked picture
 
-| Feature | Detail |
-| --- | --- |
-| Input | Upload, drop or paste a PNG, JPEG or WebP up to 8 MB |
-| Suggested masks | Email, international and formatted phone numbers, Luhn-checked card numbers, common secret-key formats, labelled or shaped request and trace IDs |
-| Left readable | Error codes, order numbers, versions and ordinary text |
-| Review | Draw, move, resize or remove masks, then preview exactly what Jira will store |
-| Reveal | One value, one named person, for 1, 3, 7 or 30 days |
-| Revoke | Publisher only; deletes the key and the encrypted crop |
-| Clean-up | Deleting the attachment in Jira removes the app's data the next time the panel lists it |
+![Private details masked for everyone](docs/images/everyone.jpg)
+
+### 5. The named person reveals it in place
+
+![The request ID appears where it was](docs/images/right.jpg)
+
+```mermaid
+sequenceDiagram
+    actor P as Publisher
+    participant UI as Panel
+    participant J as Jira
+    participant F as Forge function
+    actor N as Named person
+    P->>UI: Screenshot
+    UI->>UI: OCR, mask, review
+    UI->>J: Masked PNG only
+    UI->>F: Encrypted storage of one crop, for one person
+    N->>F: Reveal
+    F->>F: Work item access, named account, not revoked, not expired
+    F-->>N: The crop, drawn back in place
+    P->>F: Revoke
+    F->>F: Delete key and ciphertext
+    N->>F: Reveal
+    F-->>N: Denied, no pixels
+```
+
+### 6. Forge checks who is asking, every time
+
+![Forge checks the named person before releasing the value](docs/images/flow.jpg)
+
+### 7. Revoke, and the value is destroyed
+
+![Revoking destroys the stored value](docs/images/closed.jpg)
+
+## Three things between your data and the ticket
+
+![Masked before upload, one named person, locked on Forge](docs/images/three.jpg)
+
+## Where each thing lives
+
+```mermaid
+flowchart TB
+    subgraph Browser["Publisher's browser"]
+        O["Original screenshot (never uploaded)"]
+    end
+    subgraph Jira
+        A["Masked PNG: anyone with access"]
+    end
+    subgraph Forge
+        KVS["KVS: record, grant, encrypted crop"]
+        SEC["Secret storage: one key per crop"]
+        FN["Function: decides every reveal"]
+        FN --> KVS
+        FN --> SEC
+    end
+    O -->|painted masks| A
+    O -->|one chosen crop| FN
+```
 
 ## Who can do what
 
@@ -72,6 +152,33 @@ All customer data shown is made up.
 | Revoke | Yes | No | No |
 
 Jira shows the panel's buttons to people who can edit the work item.
+
+## Features
+
+| Feature | Detail |
+| --- | --- |
+| Input | PNG, JPEG or WebP up to 8 MB |
+| Suggested masks | Email, international and formatted phone numbers, Luhn-checked card numbers, common secret-key formats, labelled or shaped request and trace IDs |
+| Left readable | Error codes, order numbers, versions and ordinary text |
+| Revoke | Publisher only; deletes the key and the encrypted crop |
+| Clean-up | Deleting the attachment in Jira removes the app's data the next time the panel lists it |
+
+## What has been checked
+
+- `npm test`: 19 tests (access decisions, encryption, detection, resolvers against stand-in Jira and storage).
+- Two real accounts against the **production** Forge deployment on a real Jira Cloud site: protect, publisher
+  denied, named person reveals, revoke, named person denied. One site, made-up data, Chrome.
+- On the sample screenshot, email, phone, card number and request ID were suggested and the error was left readable.
+  No detection accuracy rate has been measured.
+
+## What it is not
+
+- Not a guarantee that an image holds nothing sensitive. Suggestions are a review aid.
+- Not able to take back what someone already saw, copied or photographed.
+- Not a defence against a dishonest publisher: the server does not check that the attached image is masked.
+- Not an audit trail: reveals are not logged.
+
+The full list is in the [security model](docs/SECURITY.md).
 
 ## Repository map
 
@@ -98,7 +205,7 @@ tests/                       Node tests: access, crypto, detection, resolvers
 e2e/full_flow.py             Live two-account check on a real Jira site
 scripts/                     Asset preparation, sample screenshot, test browser profiles
 fixtures/                    Made-up sample screenshot and its HTML source
-docs/                        Architecture and security model
+docs/                        Architecture, security model, images
 ```
 
 ## Run it
@@ -128,13 +235,8 @@ npm run deploy         # development, or: npm run deploy:prod
 forge install          # choose Jira and your site
 ```
 
-## Limits
+## Licence and credits
 
-- Suggestions are a review aid. They cannot prove an image holds nothing sensitive.
-- Revoking cannot take back what someone already saw, copied or photographed.
-- The server does not check that the attached image is masked; it trusts the publisher's browser.
-- The full list is in the [security model](docs/SECURITY.md).
-
-## Licence
-
-Apache-2.0. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Apache-2.0, see [LICENSE](LICENSE). PaddleOCR (Apache-2.0), onnxruntime-web (MIT) and validator.js (MIT) are listed
+in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Developed with AI coding assistance (Claude Code). All sample
+data is synthetic.
