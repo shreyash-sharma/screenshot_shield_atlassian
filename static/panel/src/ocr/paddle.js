@@ -1,3 +1,4 @@
+// Text recognition in the browser (PaddleOCR on onnxruntime WebAssembly).
 import { PaddleOCR } from '@paddleocr/paddleocr-js';
 
 let singleton = null;

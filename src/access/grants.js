@@ -1,3 +1,4 @@
+// Pure access decisions: no storage or network, so they can be tested on their own.
 function evaluateRevealAccess({
   screenshot,
   grant,

@@ -1,3 +1,4 @@
+// AES-256-GCM. A wrong key or altered data throws.
 const { createCipheriv, createDecipheriv, randomBytes } = require('node:crypto');
 
 const ALGO = 'aes-256-gcm';

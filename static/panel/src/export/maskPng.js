@@ -1,3 +1,4 @@
+// Paints the masks onto a copy of the screenshot and cuts the revealable crop. Runs in the browser.
 function clampBox(bounds, width, height) {
   const x = Math.max(0, Math.min(width - 1, Math.round(bounds.x)));
   const y = Math.max(0, Math.min(height - 1, Math.round(bounds.y)));
@@ -61,18 +62,4 @@ export function blobToBase64(blob) {
     reader.onerror = () => reject(reader.error || new Error('read_failed'));
     reader.readAsDataURL(blob);
   });
-}
-
-/** Pixel check helper: every pixel in region must differ from source (opaque cover). */
-export function regionFullyCovered(sourceCanvas, maskedCanvas, bounds) {
-  const b = clampBox(bounds, sourceCanvas.width, sourceCanvas.height);
-  const s = sourceCanvas.getContext('2d').getImageData(b.x, b.y, b.width, b.height).data;
-  const m = maskedCanvas.getContext('2d').getImageData(b.x, b.y, b.width, b.height).data;
-  let covered = 0;
-  const total = b.width * b.height;
-  for (let i = 0; i < s.length; i += 4) {
-    const same = s[i] === m[i] && s[i + 1] === m[i + 1] && s[i + 2] === m[i + 2];
-    if (!same) covered += 1;
-  }
-  return { covered, total, ratio: covered / total };
 }

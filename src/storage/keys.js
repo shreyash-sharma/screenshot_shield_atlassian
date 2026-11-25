@@ -1,3 +1,4 @@
+// Names of everything the app stores. key:<id> lives in Forge secret storage, the rest in KVS.
 function shotKey(id) {
   return `shot:${id}`;
 }

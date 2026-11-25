@@ -1,3 +1,4 @@
+// The panel's calls out: Jira REST (attachments) and Forge invoke (the resolver).
 import { invoke, requestJira, view } from '@forge/bridge';
 
 export async function getIssueContext() {

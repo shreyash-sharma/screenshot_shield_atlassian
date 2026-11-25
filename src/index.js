@@ -1,3 +1,4 @@
+// Forge function entry: the only calls the panel can make to the backend.
 const Resolver = require('@forge/resolver').default;
 const {
   listScreenshots,

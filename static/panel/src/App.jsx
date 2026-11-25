@@ -1,3 +1,4 @@
+// The panel: load a screenshot, review suggested masks, attach the masked copy, list published screenshots.
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getIssueContext, uploadMaskedPng, listScreenshots, listAssignable, publishScreenshot } from './api/jira.js';
 import { runOcr } from './ocr/paddle.js';

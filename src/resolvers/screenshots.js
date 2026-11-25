@@ -1,3 +1,5 @@
+// Backend logic. Calls to Jira run as the signed-in user and access is decided here, not in the panel.
+// Only an encrypted crop of the one revealable value is stored (see docs/ARCHITECTURE.md).
 const { kvs } = require('@forge/kvs');
 const api = require('@forge/api');
 const { route } = require('@forge/api');

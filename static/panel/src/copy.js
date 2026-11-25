@@ -1,3 +1,4 @@
+// User-facing wording for reasons, errors, mask types and grant status.
 const DENY_REASONS = {
   no_issue_access: 'You cannot access this work item.',
   not_active: 'This protected screenshot is not active.',
